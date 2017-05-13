@@ -1,6 +1,15 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import operator
+
+import xgboost as xgb
+from sklearn.cross_validation import train_test_split
+
 
 def create_feature_map(columns):
     """
@@ -15,35 +24,27 @@ def create_feature_map(columns):
     outfile.close()
 
 
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import operator
-
-import xgboost as xgb
-from sklearn.cross_validation import train_test_split
-
 x = pd.read_csv("x.csv")
 
 # fmap
 print("create feature map... ")
-features = [f for f in x.columns if f not in ["label", "user_id", "seller_id", "index"]]
+features = [f for f in x.columns if f not in [
+    "label", "user_id", "seller_id", "index"]]
 create_feature_map(features)
 
 
 print ("start trainning ...")
 print ("all samples: ", x.shape)
 
-x0 = x[x.label==0]
-x1 = x[x.label==1]
+x0 = x[x.label == 0]
+x1 = x[x.label == 1]
 x0 = x0.reindex(np.random.permutation(x0.index))
 x1 = x1.reindex(np.random.permutation(x1.index))
 
 # train model
 # down sample
-x_posi = x1[x1.label==1] #[0:14952]
-x_nega = x0[x0.label==0][0:int(1.5*30000)]
+x_posi = x1[x1.label == 1]  # [0:14952]
+x_nega = x0[x0.label == 0][0:int(1.5 * 30000)]
 x = pd.concat((x_posi, x_nega), axis=0)
 x = x.reindex(np.random.permutation(x.index))
 print ("positive samples: ", x_posi.shape)
@@ -55,8 +56,9 @@ y = x["label"]
 x = x.drop(["label"], axis=1)
 x = x.drop(["user_id"], axis=1)
 x = x.drop(["seller_id"], axis=1)
-x = x.drop(["index"] , axis=1)
-X_train, X_test , y_train , y_test = train_test_split(x.as_matrix(), y.as_matrix(), test_size=0.25)
+x = x.drop(["index"], axis=1)
+X_train, X_test, y_train, y_test = train_test_split(
+    x.as_matrix(), y.as_matrix(), test_size=0.25)
 
 # train sample
 dtrain = xgb.DMatrix(x.as_matrix(), y.as_matrix())
@@ -110,7 +112,7 @@ df = pd.DataFrame(importance, columns=['feature', 'fscore'])
 df['fscore'] = df['fscore'] / df['fscore'].sum()
 plt.figure()
 df.plot()
-df.plot(kind='barh', x='feature', y='fscore',figsize=(10, 25))
+df.plot(kind='barh', x='feature', y='fscore', figsize=(10, 25))
 plt.title('XGBoost Feature Importance')
 plt.xlabel('relative importance')
 plt.gcf().savefig('feature_importance_xgb.png')

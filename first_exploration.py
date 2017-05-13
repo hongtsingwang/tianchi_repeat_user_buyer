@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # ===============================================================================
-# 
+#
 # Copyright (c) 2017 Letv.com, Inc. All Rights Reserved
 # @Time     : 2017/4/1 16:39
 # @Author   : Wang Hongqing
@@ -33,8 +33,10 @@ import pymongo
 train_file = pd.read_csv("train_format1.csv")
 test_file = pd.read_csv("test_format1.csv")
 
-client = pymongo.MongoClient(r"mongodb://admin:MzQyZDZjZWQ1Zjg@10.183.99.111:9428/admin")
+client = pymongo.MongoClient(
+    r"mongodb://admin:MzQyZDZjZWQ1Zjg@10.183.99.111:9428/admin")
 db = client[r"common1"]
+
 
 def basic_data_statistics():
     collection = db["base_statistic"]
@@ -46,9 +48,11 @@ def basic_data_statistics():
     collection.insert({"train_merchants_length": train_merchants_length})
     test_merchants_length = len(test_file['merchant_id'].value_counts())
     collection.insert({"test_merchants_length": test_merchants_length})
-    train_pairs_length = len(train_file.drop_duplicates(['merchant_id', 'user_id']))
+    train_pairs_length = len(
+        train_file.drop_duplicates(['merchant_id', 'user_id']))
     collection.insert({"train_pairs_length": train_pairs_length})
-    test_pairs_length = len(test_file.drop_duplicates(['merchant_id', 'user_id']))
+    test_pairs_length = len(
+        test_file.drop_duplicates(['merchant_id', 'user_id']))
     collection.insert({"test_pairs_length": test_pairs_length})
     train_positive_pairs = len(train_file[train_file['label'] == 1])
     collection.insert({"train_positive_pairs": train_positive_pairs})
@@ -60,11 +64,13 @@ def basic_data_statistics():
     log_activity_users_number = 424170
     collection.insert({"log_activity_users_number": log_activity_users_number})
     log_activity_merchants_number = 4995
-    collection.insert({"log_activity_merchants_number": log_activity_merchants_number})
+    collection.insert(
+        {"log_activity_merchants_number": log_activity_merchants_number})
     log_activity_item_number = 1090390
     collection.insert({"log_activity_item_number": log_activity_item_number})
     log_activity_category_number = 1658
-    collection.insert({"log_activity_category_number": log_activity_category_number})
+    collection.insert(
+        {"log_activity_category_number": log_activity_category_number})
     log_activity_brand_number = 8443
     collection.insert({"log_activity_brand_number": log_activity_brand_number})
     # 用hive计算出的结果
@@ -72,11 +78,13 @@ def basic_data_statistics():
     log_activity_click_num = 48550713
     collection.insert({"log_activity_click_num": log_activity_click_num})
     log_activity_addtocart_num = 76750
-    collection.insert({"log_activity_addtocart_num": log_activity_addtocart_num})
+    collection.insert(
+        {"log_activity_addtocart_num": log_activity_addtocart_num})
     log_activity_purchase_num = 3292144
     collection.insert({"log_activity_purchase_num": log_activity_purchase_num})
     log_activity_addtofavorite_num = 3005723
-    collection.insert({"log_activity_addtofavorite_num": log_activity_addtofavorite_num})
+    collection.insert(
+        {"log_activity_addtofavorite_num": log_activity_addtofavorite_num})
 
     log_click_ratio = 1.0 * log_activity_click_num / log_activity_rows
     collection.insert({"log_click_ratio": log_click_ratio})
